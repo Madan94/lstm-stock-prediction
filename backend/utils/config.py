@@ -2,9 +2,9 @@
 
 # Indices configuration
 INDICES = {
-    "SP500": {"symbol": "^GSPC", "name": "S&P 500"},
-    "DJI": {"symbol": "^DJI", "name": "Dow Jones Industrial Average"},
-    "NASDAQ": {"symbol": "^IXIC", "name": "NASDAQ Composite"}
+    "SP500": {"symbol": "", "name": "S&P 500"},
+    "DJI": {"symbol": "", "name": "Dow Jones Industrial Average"},
+    "NASDAQ": {"symbol": "", "name": "NASDAQ Composite"}
 }
 
 # Data configuration
