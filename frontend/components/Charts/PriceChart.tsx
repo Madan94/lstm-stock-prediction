@@ -16,8 +16,8 @@ export default function PriceChart({ predictions }: PriceChartProps) {
   }));
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-md">
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">Prediction Probability Over Time</h3>
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <h3 className="text-lg font-semibold mb-4 text-black">Prediction Probability Over Time</h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -32,6 +32,7 @@ export default function PriceChart({ predictions }: PriceChartProps) {
               backgroundColor: '#ffffff',
               border: '1px solid #e5e7eb',
               borderRadius: '4px',
+              color: '#000000',
             }}
             labelFormatter={(value) => new Date(value).toLocaleDateString()}
           />

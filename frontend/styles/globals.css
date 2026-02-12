@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 17, 24, 39;
+  --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
-  --leaf-green: 34, 197, 94;
+  --trading-green: 34, 197, 94;
 }
 
 body {
@@ -33,6 +33,39 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #16a34a;
+}
+
+/* Floating animation for numbers */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 1;
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+  opacity: 0;
 }
 
 

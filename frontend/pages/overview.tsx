@@ -22,7 +22,11 @@ export default function Overview() {
     ])
       .then(([metricsData, baselineData]) => {
         setMetrics(metricsData);
-        setBaseline(baselineData);
+        // Filter out ARIMA
+        const filteredBaseline = baselineData.filter((model) => 
+          !model.model_name.toLowerCase().includes('arima')
+        );
+        setBaseline(filteredBaseline);
         setLoading(false);
       })
       .catch((error) => {
@@ -36,7 +40,7 @@ export default function Overview() {
       <div className="flex">
         <Sidebar />
         <div className="flex-1 p-8">
-          <p className="text-gray-600">Please select an index from the sidebar</p>
+          <p className="text-black/60">Please select an index from the sidebar</p>
         </div>
       </div>
     );
@@ -46,10 +50,10 @@ export default function Overview() {
     <div className="flex">
       <Sidebar />
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Model Overview</h1>
+        <h1 className="text-3xl font-bold text-black mb-8">Model Overview</h1>
 
         {loading ? (
-          <div className="text-gray-600">Loading...</div>
+          <div className="text-black/60">Loading...</div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

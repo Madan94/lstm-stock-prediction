@@ -31,7 +31,7 @@ export default function Predictions() {
       <div className="flex">
         <Sidebar />
         <div className="flex-1 p-8">
-          <p className="text-gray-600">Please select an index from the sidebar</p>
+          <p className="text-black/60">Please select an index from the sidebar</p>
         </div>
       </div>
     );
@@ -44,19 +44,19 @@ export default function Predictions() {
     <div className="flex">
       <Sidebar />
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Predictions Dashboard</h1>
+        <h1 className="text-3xl font-bold text-black mb-8">Predictions Dashboard</h1>
 
         {loading ? (
-          <div className="text-gray-600">Loading...</div>
+          <div className="text-black/60">Loading...</div>
         ) : (
           <>
             <div className="mb-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-4 inline-block">
-                <span className="text-gray-600 mr-4">Recent Accuracy:</span>
-                <span className="text-2xl font-bold text-gray-900">
+              <div className="bg-white border border-gray-200 rounded-lg p-4 inline-block shadow-sm">
+                <span className="text-black/70 mr-4">Recent Accuracy:</span>
+                <span className="text-2xl font-bold text-trading-green">
                   {index === 'SP500' ? '75.46%' : `${accuracy.toFixed(2)}%`}
                 </span>
-                <span className="text-gray-600 ml-2">
+                <span className="text-black/60 ml-2">
                   ({correctCount} / {predictions.length})
                 </span>
               </div>

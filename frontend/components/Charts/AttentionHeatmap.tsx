@@ -11,8 +11,8 @@ export default function AttentionHeatmap({ attention, lookbackDays }: AttentionH
 
   if (attention.length === 0) {
     return (
-      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-md">
-        <p className="text-gray-600">No attention data available</p>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+        <p className="text-black/60">No attention data available</p>
       </div>
     );
   }
@@ -24,18 +24,18 @@ export default function AttentionHeatmap({ attention, lookbackDays }: AttentionH
   const maxWeight = Math.max(...recentAttention.flatMap((a) => a.weights));
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">Attention Weights Heatmap</h3>
-      <p className="text-sm text-gray-600 mb-4">
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <h3 className="text-lg font-semibold mb-4 text-black">Attention Weights Heatmap</h3>
+      <p className="text-sm text-black/60 mb-4">
         Showing attention weights for the last {recentAttention.length} predictions
       </p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr>
-              <th className="text-left text-gray-600 p-2">Date</th>
+              <th className="text-left text-black/60 p-2">Date</th>
               {Array.from({ length: Math.min(lookbackDays, 20) }, (_, i) => (
-                <th key={i} className="text-center text-gray-600 p-2 text-xs">
+                <th key={i} className="text-center text-black/60 p-2 text-xs">
                   Day -{lookbackDays - i}
                 </th>
               ))}
@@ -52,7 +52,7 @@ export default function AttentionHeatmap({ attention, lookbackDays }: AttentionH
                   }`}
                   onClick={() => setSelectedDate(item.date === selectedDate ? null : item.date)}
                 >
-                  <td className="p-2 text-gray-900 text-xs">
+                  <td className="p-2 text-black text-xs">
                     {new Date(item.date).toLocaleDateString()}
                   </td>
                   {weights.map((weight, idx) => {
@@ -66,7 +66,7 @@ export default function AttentionHeatmap({ attention, lookbackDays }: AttentionH
                         }}
                         title={`Weight: ${weight.toFixed(4)}`}
                       >
-                        <span className="text-xs text-gray-900">
+                        <span className="text-xs text-black">
                           {weight.toFixed(2)}
                         </span>
                       </td>
@@ -78,7 +78,7 @@ export default function AttentionHeatmap({ attention, lookbackDays }: AttentionH
           </tbody>
         </table>
       </div>
-      <div className="mt-4 flex items-center justify-between text-xs text-gray-600">
+      <div className="mt-4 flex items-center justify-between text-xs text-black/60">
         <span>Darker green = higher attention weight</span>
         <span>Click a row to highlight</span>
       </div>

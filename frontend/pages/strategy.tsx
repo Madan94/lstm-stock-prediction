@@ -23,7 +23,11 @@ export default function Strategy() {
     ])
       .then(([equityData, baselineData]) => {
         setEquityCurve(equityData);
-        setBaseline(baselineData);
+        // Filter out ARIMA
+        const filteredBaseline = baselineData.filter((model) => 
+          !model.model_name.toLowerCase().includes('arima')
+        );
+        setBaseline(filteredBaseline);
         setLoading(false);
       })
       .catch((error) => {
@@ -37,7 +41,7 @@ export default function Strategy() {
       <div className="flex">
         <Sidebar />
         <div className="flex-1 p-8">
-          <p className="text-gray-600">Please select an index from the sidebar</p>
+          <p className="text-black/60">Please select an index from the sidebar</p>
         </div>
       </div>
     );
@@ -50,10 +54,10 @@ export default function Strategy() {
     <div className="flex">
       <Sidebar />
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Strategy Performance</h1>
+        <h1 className="text-3xl font-bold text-black mb-8">Strategy Performance</h1>
 
         {loading ? (
-          <div className="text-gray-600">Loading...</div>
+          <div className="text-black/60">Loading...</div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -82,10 +86,10 @@ export default function Strategy() {
 
 
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Market Insights</h3>
+              <h3 className="text-lg font-semibold text-black mb-2">Market Insights</h3>
 
               {index === 'SP500' && (
-                <p className="text-gray-700">
+                <p className="text-black/70">
                   Taking the full history of the S&P 500, the overall average S&P 500 value would be <span className="font-bold">$789.83 billion</span>,
                   with an average annual increase of (approximately) 8.52%.
                   <span className="ml-2" role="img" aria-label="pin">📌</span>
@@ -93,7 +97,7 @@ export default function Strategy() {
               )}
 
               {index === 'NASDAQ' && (
-                <p className="text-gray-700">
+                <p className="text-black/70">
                   Nasdaq has a market cap or net worth of <span className="font-bold">$48.25 billion</span>.
                   The enterprise value is $57.00 billion. The last earnings date was Thursday, January 29, 2026, before market open.
                   Nasdaq has 571.00 million shares outstanding. The number of shares has decreased by -0.10% in one year.
@@ -102,7 +106,7 @@ export default function Strategy() {
               )}
 
               {index === 'DJI' && (
-                <p className="text-gray-700">
+                <p className="text-black/70">
                   The Dow Jones Industrial Average consists of 30 prominent companies listed on stock exchanges in the United States.
                   It has historically returned approximately 5-7% annually when adjusted for inflation.
                   <span className="ml-2" role="img" aria-label="pin">📌</span>
