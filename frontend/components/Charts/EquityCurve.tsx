@@ -8,8 +8,8 @@ interface EquityCurveProps {
 
 export default function EquityCurve({ data }: EquityCurveProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-md">
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">Equity Curve</h3>
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <h3 className="text-lg font-semibold mb-4 text-black">Equity Curve</h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -27,6 +27,7 @@ export default function EquityCurve({ data }: EquityCurveProps) {
               backgroundColor: '#ffffff',
               border: '1px solid #e5e7eb',
               borderRadius: '4px',
+              color: '#000000',
             }}
             labelFormatter={(value) => new Date(value).toLocaleDateString()}
             formatter={(value: number) => formatCurrency(value)}

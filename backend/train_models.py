@@ -33,7 +33,7 @@ from backend.utils.config import (
     LSTM_HIDDEN_SIZE, LSTM_NUM_LAYERS, DROPOUT,
     LEARNING_RATE, BATCH_SIZE, NUM_EPOCHS,
     UPWARD_PENALTY, DOWNWARD_PENALTY,
-    MODELS_DIR, RESULTS_DIR, WEIGHT_DECAY
+    MODELS_DIR, RESULTS_DIR
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -99,7 +99,7 @@ def train_attention_lstm(
         # Loss function
         loss_fn = AsymmetricDirectionalLoss(UPWARD_PENALTY, DOWNWARD_PENALTY)
         
-        # Train model with enhanced parameters
+        # Train model
         model, history = train_model(
             model=model,
             X_train=X_train_split,
@@ -111,9 +111,7 @@ def train_attention_lstm(
             batch_size=BATCH_SIZE,
             learning_rate=LEARNING_RATE,
             device=device,
-            return_attention=True,
-            use_augmentation=True,
-            weight_decay=WEIGHT_DECAY
+            return_attention=True
         )
         
         # Make predictions
@@ -225,9 +223,7 @@ def train_vanilla_lstm(
             batch_size=BATCH_SIZE,
             learning_rate=LEARNING_RATE,
             device=device,
-            return_attention=False,
-            use_augmentation=True,
-            weight_decay=WEIGHT_DECAY
+            return_attention=False
         )
         
         predictions, _ = walk_forward_predict(model, X_test, device=device, return_attention=False)
@@ -373,7 +369,11 @@ def main(skip_if_exists: bool = False):
     all_data = get_all_indices_data(YEARS_OF_DATA)
     
     # Train models for each index
+    target_indices = ["DJI", "NASDAQ"]
     for index_name, df in all_data.items():
+        if index_name not in target_indices:
+            continue
+
         if df is None or len(df) == 0:
             logger.warning(f"Skipping {index_name} - no data available")
             continue

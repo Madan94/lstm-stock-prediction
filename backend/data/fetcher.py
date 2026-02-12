@@ -24,9 +24,8 @@ def fetch_index_data(symbol: str, years: int = 5) -> pd.DataFrame:
         end_date = datetime.now()
         start_date = end_date - timedelta(days=years * 365)
         
-        # Disable cache to avoid readonly database issues
         ticker = yf.Ticker(symbol)
-        df = ticker.history(start=start_date, end=end_date, actions=False)
+        df = ticker.history(start=start_date, end=end_date)
         
         if df is None or df.empty:
             raise ValueError(f"No data retrieved for {symbol}")
@@ -38,7 +37,7 @@ def fetch_index_data(symbol: str, years: int = 5) -> pd.DataFrame:
             raise ValueError(f"Invalid data format for {symbol}")
         
         # Remove timezone if present
-        if df.index.tz is not None:
+        if df.index is not None and df.index.tz is not None:
             df.index = df.index.tz_localize(None)
         
         # Sort by date
@@ -57,18 +56,37 @@ def fetch_index_data(symbol: str, years: int = 5) -> pd.DataFrame:
 def get_all_indices_data(years: int = 5) -> Dict[str, pd.DataFrame]:
     """
     Fetch data for all configured indices.
+    Prioritizes local data in backend/data/results if available.
     
     Args:
-        years: Number of years of historical data
+        years: Number of years of historical data (used only if local data missing)
         
     Returns:
         Dictionary mapping index names to DataFrames
     """
     from backend.utils.config import INDICES
+    import pickle
+    import os
     
     data = {}
+    results_dir = "backend/data/results"
+    
     for index_name, config in INDICES.items():
+        # Try loading local data first
+        local_path = os.path.join(results_dir, f"{index_name}_data.pkl")
+        if os.path.exists(local_path):
+            try:
+                logger.info(f"Loading local data for {index_name} from {local_path}")
+                with open(local_path, 'rb') as f:
+                    df = pickle.load(f)
+                data[index_name] = df
+                continue
+            except Exception as e:
+                logger.warning(f"Failed to load local data for {index_name}: {e}")
+        
+        # Fallback to fetching
         try:
+            logger.info(f"Fetching data for {index_name}...")
             data[index_name] = fetch_index_data(config["symbol"], years)
         except Exception as e:
             logger.warning(f"Failed to fetch {index_name}: {e}")

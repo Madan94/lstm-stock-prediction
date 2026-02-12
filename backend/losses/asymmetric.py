@@ -28,6 +28,11 @@ class AsymmetricDirectionalLoss(nn.Module):
         self.downward_penalty = downward_penalty
         self.bce = nn.BCELoss(reduction='none')
         
+        # Cache penalty tensors to avoid creating them on each forward pass
+        # These will be moved to the correct device in forward()
+        self._upward_penalty_tensor = None
+        self._downward_penalty_tensor = None
+        
     def forward(self, predictions: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         """
         Compute asymmetric loss.
@@ -61,11 +66,21 @@ class AsymmetricDirectionalLoss(nn.Module):
         # Compute base BCE loss for each sample
         bce_loss = self.bce(predictions, targets)
         
-        # Apply asymmetric weights
+        # Initialize cached tensors on first use or if device changes
+        if (self._upward_penalty_tensor is None or 
+            self._upward_penalty_tensor.device != predictions.device):
+            self._upward_penalty_tensor = torch.tensor(
+                self.upward_penalty, device=predictions.device, dtype=predictions.dtype
+            )
+            self._downward_penalty_tensor = torch.tensor(
+                self.downward_penalty, device=predictions.device, dtype=predictions.dtype
+            )
+        
+        # Apply asymmetric weights using cached tensors
         weights = torch.where(
             targets == 1,
-            torch.tensor(self.upward_penalty, device=predictions.device),
-            torch.tensor(self.downward_penalty, device=predictions.device)
+            self._upward_penalty_tensor,
+            self._downward_penalty_tensor
         )
         
         # Weighted loss

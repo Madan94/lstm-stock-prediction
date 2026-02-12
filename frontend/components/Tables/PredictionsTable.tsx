@@ -7,17 +7,17 @@ interface PredictionsTableProps {
 
 export default function PredictionsTable({ predictions }: PredictionsTableProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-md">
-      <h3 className="text-lg font-semibold mb-4 text-gray-900">Recent Predictions</h3>
+    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <h3 className="text-lg font-semibold mb-4 text-black">Recent Predictions</h3>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200">
-              <th className="text-left p-3 text-gray-600">Date</th>
-              <th className="text-center p-3 text-gray-600">Actual</th>
-              <th className="text-center p-3 text-gray-600">Predicted</th>
-              <th className="text-center p-3 text-gray-600">Probability</th>
-              <th className="text-center p-3 text-gray-600">Correct</th>
+              <th className="text-left p-3 text-black/60">Date</th>
+              <th className="text-center p-3 text-black/60">Actual</th>
+              <th className="text-center p-3 text-black/60">Predicted</th>
+              <th className="text-center p-3 text-black/60">Probability</th>
+              <th className="text-center p-3 text-black/60">Correct</th>
             </tr>
           </thead>
           <tbody>
@@ -26,12 +26,12 @@ export default function PredictionsTable({ predictions }: PredictionsTableProps)
                 key={idx}
                 className="border-b border-gray-200 hover:bg-gray-50"
               >
-                <td className="p-3 text-gray-900">{formatDate(pred.date)}</td>
+                <td className="p-3 text-black">{formatDate(pred.date)}</td>
                 <td className="p-3 text-center">
                   <span
                     className={`px-2 py-1 rounded ${
                       pred.actual_direction === 1
-                        ? 'bg-leaf/20 text-leaf'
+                        ? 'bg-trading-green/20 text-trading-green'
                         : 'bg-red-500/20 text-red-500'
                     }`}
                   >
@@ -42,21 +42,21 @@ export default function PredictionsTable({ predictions }: PredictionsTableProps)
                   <span
                     className={`px-2 py-1 rounded ${
                       pred.predicted_direction === 1
-                        ? 'bg-leaf/20 text-leaf'
+                        ? 'bg-trading-green/20 text-trading-green'
                         : 'bg-red-500/20 text-red-500'
                     }`}
                   >
                     {pred.predicted_direction === 1 ? '↑' : '↓'}
                   </span>
                 </td>
-                <td className="p-3 text-center text-gray-900">
+                <td className="p-3 text-center text-black">
                   {formatPercent(pred.probability * 100)}
                 </td>
                 <td className="p-3 text-center">
                   <span
                     className={`px-2 py-1 rounded ${
                       pred.correct
-                        ? 'bg-leaf/20 text-leaf'
+                        ? 'bg-trading-green/20 text-trading-green'
                         : 'bg-red-500/20 text-red-500'
                     }`}
                   >

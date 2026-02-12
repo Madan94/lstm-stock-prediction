@@ -3,29 +3,34 @@
 # Indices configuration
 INDICES = {
     "SP500": {"symbol": "^GSPC", "name": "S&P 500"},
-    "DJIA": {"symbol": "^DJI", "name": "Dow Jones Industrial Average"},
+    "DJI": {"symbol": "^DJI", "name": "Dow Jones Industrial Average"},
     "NASDAQ": {"symbol": "^IXIC", "name": "NASDAQ Composite"}
 }
 
-# Data configuration (optimized for 1 year of data)
-YEARS_OF_DATA = 1  # One year of S&P 500 data
-LOOKBACK_WINDOW = 20  # 20-day lookback window (reduced for limited data)
-TRAIN_WINDOW_YEARS = 0.7  # ~7 months training window
-TEST_WINDOW_MONTHS = 1  # 1 month test window
-USE_SIMPLE_SPLIT = True  # Use simple train/test split instead of walk-forward for limited data
-TRAIN_SPLIT_RATIO = 0.8  # 80% train, 20% test when using simple split
+# Data configuration
+YEARS_OF_DATA = 30  # Fetch 30 years of historical data
+LOOKBACK_WINDOW = 150  # Increased from 120 to 150 days for more context
+TRAIN_WINDOW_YEARS = 2
+TEST_WINDOW_MONTHS = 12
 
-# Model configuration (optimized for higher accuracy)
-LSTM_HIDDEN_SIZE = 256  # Increased for more capacity
-LSTM_NUM_LAYERS = 3  # Deeper network
-DROPOUT = 0.3  # Slightly higher dropout for regularization
-LEARNING_RATE = 0.0005  # Lower learning rate for stability
-BATCH_SIZE = 64  # Larger batch size
-NUM_EPOCHS = 100  # More epochs with early stopping
-WEIGHT_DECAY = 1e-5  # L2 regularization
+# Model configuration - Optimized for speed and performance
+LSTM_HIDDEN_SIZE = 128  # Reduced from 512 for speed (sufficient for this data)
+LSTM_NUM_LAYERS = 2  # Reduced from 4 for speed
+DROPOUT = 0.2  # Reduced slightly
+LEARNING_RATE = 0.001  # Increased slightly for faster convergence
+BATCH_SIZE = 64  # Increased from 12 for faster GPU training
+NUM_EPOCHS = 50  # Reduced from 150 (early stopping usually triggers sooner)
+EARLY_STOPPING_PATIENCE = 5  # Reduced from 10
+GRADIENT_CLIP_VALUE = 1.0  # Gradient clipping threshold
+
+# Learning rate scheduler
+USE_LR_SCHEDULER = True
+LR_SCHEDULER_FACTOR = 0.5  # Reduce LR by half
+LR_SCHEDULER_PATIENCE = 5  # After 5 epochs without improvement
+LR_SCHEDULER_MIN_LR = 1e-6  # Minimum learning rate
 
 # Asymmetric loss configuration
-UPWARD_PENALTY = 1.5  # α - penalty for missing upward moves
+UPWARD_PENALTY = 2.0  # α - penalty for missing upward moves
 DOWNWARD_PENALTY = 1.0  # β - penalty for false positives
 
 # Backtesting configuration
@@ -44,6 +49,7 @@ VOLATILITY_PERIOD = 20
 # Paths
 MODELS_DIR = "backend/models/saved"
 RESULTS_DIR = "backend/data/results"
+
 
 
 

@@ -30,17 +30,17 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 p-4 shadow-sm">
-      <h2 className="text-lg font-semibold mb-4 text-gray-900">Select Index</h2>
+    <div className="w-64 bg-white border-r border-gray-200 p-4">
+      <h2 className="text-lg font-semibold mb-4 text-black">Select Index</h2>
       <div className="space-y-2">
         {indices.map((index) => (
           <button
             key={index.name}
             onClick={() => handleIndexChange(index.name)}
-            className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+            className={`w-full text-left px-4 py-2.5 rounded transition-all font-medium ${
               selectedIndex === index.name
-                ? 'bg-leaf text-gray-900'
-                : 'bg-gray-50 text-gray-700 hover:bg-leaf-light hover:text-gray-900'
+                ? 'bg-black text-trading-green border border-trading-green'
+                : 'bg-gray-50 text-black/80 hover:bg-black hover:text-white hover:border hover:border-black border border-transparent'
             }`}
           >
             {index.display_name}

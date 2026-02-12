@@ -22,41 +22,12 @@ router = APIRouter()
 
 def load_results(index: str) -> Dict:
     """Load saved results for an index."""
-    # Try advanced results first, then fall back to regular results
-    advanced_results_file = os.path.join(RESULTS_DIR, f"{index}_advanced_results.pkl")
     results_file = os.path.join(RESULTS_DIR, f"{index}_results.pkl")
-    
-    if os.path.exists(advanced_results_file):
-        results_file = advanced_results_file
-    elif not os.path.exists(results_file):
+    if not os.path.exists(results_file):
         raise HTTPException(status_code=404, detail=f"No results found for {index}")
     
     with open(results_file, 'rb') as f:
-        results = pickle.load(f)
-    
-    # If advanced results, extract ensemble data for API compatibility
-    if 'ensemble' in results:
-        # Use ensemble results as primary metrics
-        ensemble_metrics = results.get('ensemble', {}).get('metrics', {})
-        if ensemble_metrics:
-            results['metrics'] = ensemble_metrics
-        # Use ensemble predictions
-        ensemble_preds = results.get('ensemble', {})
-        if 'predictions' in ensemble_preds:
-            results['predictions'] = {
-                'dates': ensemble_preds.get('dates', []),
-                'actuals': ensemble_preds.get('actuals', []),
-                'predictions': ensemble_preds.get('predictions', []),
-                'probabilities': ensemble_preds.get('probabilities', [])
-            }
-        # Use ensemble attention weights if available
-        if 'attention_weights' in results.get('transformer', {}):
-            results['attention_weights'] = {
-                'dates': results.get('transformer', {}).get('dates', []),
-                'weights': results.get('transformer', {}).get('attention_weights', [])
-            }
-    
-    return results
+        return pickle.load(f)
 
 
 @router.get("/indices", response_model=List[IndexInfo])
@@ -198,60 +169,26 @@ def get_baseline_comparison(index: str):
     
     results = load_results(index)
     
-    models = []
-    
-    # Check for advanced results format (ensemble models)
-    if 'ensemble' in results:
-        # Add ensemble model (best performing)
-        ensemble_metrics = results.get('ensemble', {}).get('metrics', {})
-        backtest_metrics = results.get('backtest_metrics', {})
-        
-        models.append(BaselineComparison(
-            model_name='Ensemble (Transformer + TCN-LSTM + Attention-LSTM)',
-            accuracy=ensemble_metrics.get('accuracy', 0.0),
-            sharpe_ratio=backtest_metrics.get('sharpe_ratio', 0.0),
-            total_return=backtest_metrics.get('total_return', 0.0),
-            max_drawdown=backtest_metrics.get('max_drawdown', 0.0)
-        ))
-        
-        # Add individual models
-        for model_name in ['transformer', 'tcn_lstm', 'attention_lstm']:
-            if model_name in results:
-                model_results = results[model_name]
-                model_metrics = model_results.get('metrics', {})
-                
-                # Try to get backtest metrics for individual models if available
-                # Otherwise use default values
-                models.append(BaselineComparison(
-                    model_name=model_name.replace('_', ' ').title(),
-                    accuracy=model_metrics.get('accuracy', 0.0),
-                    sharpe_ratio=0.0,  # Individual models may not have backtest metrics
-                    total_return=0.0,
-                    max_drawdown=0.0
-                ))
-    
-    # Fall back to baseline_comparison format if available
-    elif 'baseline_comparison' in results:
-        baseline_data = results['baseline_comparison']
-        models = [
-            BaselineComparison(
-                model_name=model_name,
-                accuracy=metrics.get('accuracy', 0.0),
-                sharpe_ratio=metrics.get('sharpe_ratio', 0.0),
-                total_return=metrics.get('total_return', 0.0),
-                max_drawdown=metrics.get('max_drawdown', 0.0)
-            )
-            for model_name, metrics in baseline_data.items()
-        ]
-    else:
+    if 'baseline_comparison' not in results:
         raise HTTPException(status_code=404, detail=f"No baseline comparison found for {index}")
+    
+    baseline_data = results['baseline_comparison']
+    
+    models = [
+        BaselineComparison(
+            model_name=model_name,
+            accuracy=metrics.get('accuracy', 0.0),
+            sharpe_ratio=metrics.get('sharpe_ratio', 0.0),
+            total_return=metrics.get('total_return', 0.0),
+            max_drawdown=metrics.get('max_drawdown', 0.0)
+        )
+        for model_name, metrics in baseline_data.items()
+    ]
     
     return BaselineComparisonResponse(
         index=index,
         models=models
     )
-
-
 
 
 

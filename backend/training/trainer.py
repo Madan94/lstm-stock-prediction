@@ -7,14 +7,9 @@ from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
 from typing import Tuple, Dict, Optional
 import logging
+import copy
 
 logger = logging.getLogger(__name__)
-
-
-def add_noise_augmentation(X: torch.Tensor, noise_factor: float = 0.01) -> torch.Tensor:
-    """Add small Gaussian noise for data augmentation."""
-    noise = torch.randn_like(X) * noise_factor
-    return X + noise
 
 
 def train_model(
@@ -25,15 +20,17 @@ def train_model(
     y_val: np.ndarray,
     loss_fn: nn.Module,
     num_epochs: int = 100,
-    batch_size: int = 64,
-    learning_rate: float = 0.001,
+    batch_size: int = 32,
+    learning_rate: float = 0.0005,
     device: str = 'cpu',
     return_attention: bool = False,
-    use_augmentation: bool = True,
-    weight_decay: float = 1e-5
+    use_scheduler: bool = True,
+    scheduler_patience: int = 5,
+    early_stopping_patience: int = 15,
+    gradient_clip: float = 1.0
 ) -> Tuple[nn.Module, Dict]:
     """
-    Train a model with early stopping, learning rate scheduling, and data augmentation.
+    Train a model with early stopping, learning rate scheduling, and gradient clipping.
     
     Args:
         model: PyTorch model
@@ -47,26 +44,27 @@ def train_model(
         learning_rate: Initial learning rate
         device: Device to train on
         return_attention: Whether model returns attention weights
-        use_augmentation: Whether to use data augmentation
-        weight_decay: L2 regularization strength
+        use_scheduler: Whether to use learning rate scheduler
+        scheduler_patience: Patience for learning rate scheduler
+        early_stopping_patience: Patience for early stopping
+        gradient_clip: Gradient clipping threshold
         
     Returns:
         Trained model and training history
     """
     model = model.to(device)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
     
-    # Use AdamW with weight decay for better regularization
-    optimizer = optim.AdamW(
-        model.parameters(), 
-        lr=learning_rate,
-        weight_decay=weight_decay,
-        betas=(0.9, 0.999)
-    )
-    
-    # Learning rate scheduler with cosine annealing
-    scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(
-        optimizer, T_0=10, T_mult=2, eta_min=learning_rate * 0.01
-    )
+    # Learning rate scheduler
+    if use_scheduler:
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(
+            optimizer,
+            mode='min',
+            factor=0.5,
+            patience=scheduler_patience,
+            min_lr=1e-6,
+            verbose=True
+        )
     
     # Convert to tensors
     X_train_t = torch.FloatTensor(X_train).to(device)
@@ -76,23 +74,17 @@ def train_model(
     
     # Create data loaders
     train_dataset = TensorDataset(X_train_t, y_train_t)
-    train_loader = DataLoader(
-        train_dataset, 
-        batch_size=batch_size, 
-        shuffle=True,
-        pin_memory=True if device == 'cuda' else False
-    )
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
     
     history = {
         'train_loss': [],
         'val_loss': [],
         'val_accuracy': [],
-        'learning_rate': []
+        'learning_rates': []
     }
     
     best_val_loss = float('inf')
     best_model_state = None
-    patience = 20  # Increased patience
     patience_counter = 0
     
     for epoch in range(num_epochs):
@@ -102,20 +94,17 @@ def train_model(
         for X_batch, y_batch in train_loader:
             optimizer.zero_grad()
             
-            # Data augmentation
-            if use_augmentation and torch.rand(1).item() > 0.5:
-                X_batch = add_noise_augmentation(X_batch, noise_factor=0.005)
-            
             if return_attention:
                 output, _ = model(X_batch, return_attention=True)
             else:
-                output = model(X_batch)
+                output, _ = model(X_batch, return_attention=False)
             
             loss = loss_fn(output, y_batch)
-            
-            # Gradient clipping for stability
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            
+            # Gradient clipping
+            if gradient_clip > 0:
+                torch.nn.utils.clip_grad_norm_(model.parameters(), gradient_clip)
             
             optimizer.step()
             
@@ -123,17 +112,13 @@ def train_model(
         
         train_loss /= len(train_loader)
         
-        # Update learning rate
-        scheduler.step()
-        current_lr = scheduler.get_last_lr()[0]
-        
         # Validation
         model.eval()
         with torch.no_grad():
             if return_attention:
                 val_output, _ = model(X_val_t, return_attention=True)
             else:
-                val_output = model(X_val_t)
+                val_output, _ = model(X_val_t, return_attention=False)
             
             val_loss = loss_fn(val_output, y_val_t).item()
             
@@ -141,19 +126,24 @@ def train_model(
             predictions = (val_output.squeeze() > 0.5).long()
             val_accuracy = (predictions == y_val_t).float().mean().item()
         
+        # Update learning rate scheduler
+        current_lr = optimizer.param_groups[0]['lr']
+        if use_scheduler:
+            scheduler.step(val_loss)
+        
         history['train_loss'].append(train_loss)
         history['val_loss'].append(val_loss)
         history['val_accuracy'].append(val_accuracy)
-        history['learning_rate'].append(current_lr)
+        history['learning_rates'].append(current_lr)
         
-        # Save best model
+        # Early stopping with best model saving
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            best_model_state = model.state_dict().copy()
+            best_model_state = copy.deepcopy(model.state_dict())
             patience_counter = 0
         else:
             patience_counter += 1
-            if patience_counter >= patience:
+            if patience_counter >= early_stopping_patience:
                 logger.info(f"Early stopping at epoch {epoch+1}")
                 break
         
@@ -169,10 +159,9 @@ def train_model(
     # Load best model
     if best_model_state is not None:
         model.load_state_dict(best_model_state)
-        logger.info("Loaded best model based on validation loss")
+        logger.info(f"Loaded best model with val_loss: {best_val_loss:.4f}")
     
     return model, history
-
 
 
 
