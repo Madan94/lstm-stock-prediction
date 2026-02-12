@@ -24,8 +24,9 @@ def fetch_index_data(symbol: str, years: int = 5) -> pd.DataFrame:
         end_date = datetime.now()
         start_date = end_date - timedelta(days=years * 365)
         
+        # Disable cache to avoid readonly database issues
         ticker = yf.Ticker(symbol)
-        df = ticker.history(start=start_date, end=end_date)
+        df = ticker.history(start=start_date, end=end_date, actions=False)
         
         if df is None or df.empty:
             raise ValueError(f"No data retrieved for {symbol}")

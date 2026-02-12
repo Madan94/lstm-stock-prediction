@@ -43,8 +43,15 @@ export default function Strategy() {
     );
   }
 
-  // Get Attention LSTM metrics
-  const attentionLSTM = baseline.find((m) => m.model_name === 'attention_lstm');
+  // Get Ensemble model metrics (preferred) or Attention LSTM as fallback
+  const ensembleModel = baseline.find((m) => 
+    m.model_name.toLowerCase().includes('ensemble')
+  );
+  const attentionLSTM = baseline.find((m) => 
+    m.model_name.toLowerCase().includes('attention') || 
+    m.model_name === 'attention_lstm'
+  );
+  const modelMetrics = ensembleModel || attentionLSTM || baseline[0];
 
   return (
     <div className="flex">
@@ -56,25 +63,35 @@ export default function Strategy() {
           <div className="text-gray-600">Loading...</div>
         ) : (
           <>
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                {ensembleModel ? 'Ensemble Model Performance' : 'Model Performance'}
+              </h2>
+              {ensembleModel && (
+                <p className="text-sm text-gray-600 mb-4">
+                  Combined predictions from Transformer, TCN-LSTM, and Attention-LSTM models
+                </p>
+              )}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <MetricCard
                 title="Sharpe Ratio"
-                value={attentionLSTM?.sharpe_ratio.toFixed(2) || '0.00'}
+                value={modelMetrics?.sharpe_ratio.toFixed(2) || '0.00'}
               />
               <MetricCard
                 title="Total Return"
-                value={attentionLSTM?.total_return.toFixed(2) || '0.00'}
+                value={modelMetrics?.total_return.toFixed(2) || '0.00'}
                 subtitle="%"
               />
               <MetricCard
                 title="Max Drawdown"
-                value={attentionLSTM?.max_drawdown.toFixed(2) || '0.00'}
+                value={modelMetrics?.max_drawdown.toFixed(2) || '0.00'}
                 subtitle="%"
                 trend="down"
               />
               <MetricCard
                 title="Accuracy"
-                value={attentionLSTM?.accuracy ? (attentionLSTM.accuracy * 100).toFixed(2) : '0.00'}
+                value={modelMetrics?.accuracy ? (modelMetrics.accuracy * 100).toFixed(2) : '0.00'}
                 subtitle="%"
               />
             </div>
@@ -92,6 +109,8 @@ export default function Strategy() {
     </div>
   );
 }
+
+
 
 
 

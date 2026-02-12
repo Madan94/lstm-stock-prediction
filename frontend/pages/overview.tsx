@@ -46,56 +46,65 @@ export default function Overview() {
     <div className="flex">
       <Sidebar />
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Model Overview</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Model Overview</h1>
+        <p className="text-gray-600 mb-8">
+          Ensemble model combining Transformer, TCN-LSTM, and Attention-LSTM architectures
+        </p>
 
         {loading ? (
           <div className="text-gray-600">Loading...</div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <MetricCard
-                title="Directional Accuracy"
-                value={metrics?.accuracy ? (metrics.accuracy * 100).toFixed(2) : '0.00'}
-                subtitle="%"
-              />
-              <MetricCard
-                title="Precision"
-                value={metrics?.precision ? (metrics.precision * 100).toFixed(2) : '0.00'}
-                subtitle="%"
-              />
-              <MetricCard
-                title="Recall"
-                value={metrics?.recall ? (metrics.recall * 100).toFixed(2) : '0.00'}
-                subtitle="%"
-              />
-              <MetricCard
-                title="F1 Score"
-                value={metrics?.f1_score ? (metrics.f1_score * 100).toFixed(2) : '0.00'}
-                subtitle="%"
-              />
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Ensemble Model Performance</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <MetricCard
+                  title="Directional Accuracy"
+                  value={metrics?.accuracy ? (metrics.accuracy * 100).toFixed(2) : '0.00'}
+                  subtitle="%"
+                />
+                <MetricCard
+                  title="Precision"
+                  value={metrics?.precision ? (metrics.precision * 100).toFixed(2) : '0.00'}
+                  subtitle="%"
+                />
+                <MetricCard
+                  title="Recall"
+                  value={metrics?.recall ? (metrics.recall * 100).toFixed(2) : '0.00'}
+                  subtitle="%"
+                />
+                <MetricCard
+                  title="F1 Score"
+                  value={metrics?.f1_score ? (metrics.f1_score * 100).toFixed(2) : '0.00'}
+                  subtitle="%"
+                />
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <ComparisonChart
-                data={baseline}
-                metric="accuracy"
-                title="Accuracy Comparison"
-              />
-              <ComparisonChart
-                data={baseline}
-                metric="sharpe_ratio"
-                title="Sharpe Ratio Comparison"
-              />
-              <ComparisonChart
-                data={baseline}
-                metric="total_return"
-                title="Total Return Comparison"
-              />
-              <ComparisonChart
-                data={baseline}
-                metric="max_drawdown"
-                title="Max Drawdown Comparison"
-              />
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Model Comparison</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <ComparisonChart
+                  data={baseline}
+                  metric="accuracy"
+                  title="Accuracy Comparison"
+                />
+                <ComparisonChart
+                  data={baseline}
+                  metric="sharpe_ratio"
+                  title="Sharpe Ratio Comparison"
+                />
+                <ComparisonChart
+                  data={baseline}
+                  metric="total_return"
+                  title="Total Return Comparison"
+                />
+                <ComparisonChart
+                  data={baseline}
+                  metric="max_drawdown"
+                  title="Max Drawdown Comparison"
+                />
+              </div>
             </div>
           </>
         )}
@@ -103,6 +112,8 @@ export default function Overview() {
     </div>
   );
 }
+
+
 
 
 

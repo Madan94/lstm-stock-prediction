@@ -34,10 +34,10 @@ export default function Home() {
           Financial Forecasting Platform
         </h1>
         <p className="text-xl text-gray-600 mb-2">
-          Directional Financial Forecasting with Asymmetric Loss
+          Advanced Ensemble Financial Forecasting
         </p>
         <p className="text-gray-500">
-          Advanced attention-based LSTM models for predicting market direction
+          Transformer, TCN-LSTM, and Attention-LSTM models combined for superior accuracy
         </p>
       </div>
 
@@ -67,9 +67,15 @@ export default function Home() {
         <h2 className="text-2xl font-semibold text-gray-900 mb-6">Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Attention-Based LSTM</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Advanced Ensemble Models</h3>
             <p className="text-gray-600">
-              Neural network with attention mechanism to identify important time periods
+              Transformer, TCN-LSTM, and Attention-LSTM models combined for superior accuracy
+            </p>
+          </div>
+          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Multi-Head Attention</h3>
+            <p className="text-gray-600">
+              Transformer architecture with attention mechanism to identify important time periods
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
@@ -79,15 +85,9 @@ export default function Home() {
             </p>
           </div>
           <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Walk-Forward Validation</h3>
-            <p className="text-gray-600">
-              Robust training methodology using walk-forward analysis
-            </p>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Strategy Backtesting</h3>
             <p className="text-gray-600">
-              Long-only strategy with transaction costs and performance metrics
+              Long-only strategy with transaction costs and comprehensive performance metrics
             </p>
           </div>
         </div>

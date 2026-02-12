@@ -33,7 +33,7 @@ from backend.utils.config import (
     LSTM_HIDDEN_SIZE, LSTM_NUM_LAYERS, DROPOUT,
     LEARNING_RATE, BATCH_SIZE, NUM_EPOCHS,
     UPWARD_PENALTY, DOWNWARD_PENALTY,
-    MODELS_DIR, RESULTS_DIR
+    MODELS_DIR, RESULTS_DIR, WEIGHT_DECAY
 )
 
 logging.basicConfig(level=logging.INFO)
@@ -99,7 +99,7 @@ def train_attention_lstm(
         # Loss function
         loss_fn = AsymmetricDirectionalLoss(UPWARD_PENALTY, DOWNWARD_PENALTY)
         
-        # Train model
+        # Train model with enhanced parameters
         model, history = train_model(
             model=model,
             X_train=X_train_split,
@@ -111,7 +111,9 @@ def train_attention_lstm(
             batch_size=BATCH_SIZE,
             learning_rate=LEARNING_RATE,
             device=device,
-            return_attention=True
+            return_attention=True,
+            use_augmentation=True,
+            weight_decay=WEIGHT_DECAY
         )
         
         # Make predictions
@@ -223,7 +225,9 @@ def train_vanilla_lstm(
             batch_size=BATCH_SIZE,
             learning_rate=LEARNING_RATE,
             device=device,
-            return_attention=False
+            return_attention=False,
+            use_augmentation=True,
+            weight_decay=WEIGHT_DECAY
         )
         
         predictions, _ = walk_forward_predict(model, X_test, device=device, return_attention=False)
