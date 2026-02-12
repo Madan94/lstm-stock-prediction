@@ -4,6 +4,9 @@ interface ModelComparisonTableProps {
   models: BaselineModel[];
 }
 
+// Type for numeric metric keys only (excludes 'model_name')
+type NumericMetric = 'accuracy' | 'sharpe_ratio' | 'total_return' | 'max_drawdown';
+
 export default function ModelComparisonTable({ models }: ModelComparisonTableProps) {
   // Filter out ARIMA
   const filteredModels = models.filter((model) => 
@@ -19,7 +22,7 @@ export default function ModelComparisonTable({ models }: ModelComparisonTablePro
   };
 
   // Find the best value for each metric
-  const getBestValue = (metric: keyof BaselineModel) => {
+  const getBestValue = (metric: NumericMetric) => {
     if (metric === 'max_drawdown') {
       // For drawdown, lower is better
       return Math.min(...filteredModels.map((m) => m[metric]));
