@@ -43,15 +43,17 @@ class VanillaLSTM(nn.Module):
             nn.Sigmoid()
         )
         
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, return_attention: bool = False) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
         """
         Forward pass.
         
         Args:
             x: Input sequences (batch, seq_len, features)
+            return_attention: Whether to return attention weights (not used in Vanilla LSTM)
             
         Returns:
             output: Prediction probabilities (batch, 1)
+            attention_weights: None (for API compatibility)
         """
         # LSTM forward pass
         lstm_out, (h_n, _) = self.lstm(x)
@@ -62,7 +64,7 @@ class VanillaLSTM(nn.Module):
         # Final prediction
         output = self.fc(last_hidden)  # (batch, 1)
         
-        return output
+        return output, None
 
 
 class ARIMAModel:

@@ -79,6 +79,37 @@ export default function Strategy() {
               />
             </div>
 
+
+
+            <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Market Insights</h3>
+
+              {index === 'SP500' && (
+                <p className="text-gray-700">
+                  Taking the full history of the S&P 500, the overall average S&P 500 value would be <span className="font-bold">$789.83 billion</span>,
+                  with an average annual increase of (approximately) 8.52%.
+                  <span className="ml-2" role="img" aria-label="pin">📌</span>
+                </p>
+              )}
+
+              {index === 'NASDAQ' && (
+                <p className="text-gray-700">
+                  Nasdaq has a market cap or net worth of <span className="font-bold">$48.25 billion</span>.
+                  The enterprise value is $57.00 billion. The last earnings date was Thursday, January 29, 2026, before market open.
+                  Nasdaq has 571.00 million shares outstanding. The number of shares has decreased by -0.10% in one year.
+                  <span className="ml-2" role="img" aria-label="pin">📌</span>
+                </p>
+              )}
+
+              {index === 'DJI' && (
+                <p className="text-gray-700">
+                  The Dow Jones Industrial Average consists of 30 prominent companies listed on stock exchanges in the United States.
+                  It has historically returned approximately 5-7% annually when adjusted for inflation.
+                  <span className="ml-2" role="img" aria-label="pin">📌</span>
+                </p>
+              )}
+            </div>
+
             <div className="mb-8">
               <EquityCurve data={equityCurve} />
             </div>
@@ -89,7 +120,7 @@ export default function Strategy() {
           </>
         )}
       </div>
-    </div>
+    </div >
   );
 }
 

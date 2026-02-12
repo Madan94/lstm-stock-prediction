@@ -369,7 +369,11 @@ def main(skip_if_exists: bool = False):
     all_data = get_all_indices_data(YEARS_OF_DATA)
     
     # Train models for each index
+    target_indices = ["DJI", "NASDAQ"]
     for index_name, df in all_data.items():
+        if index_name not in target_indices:
+            continue
+
         if df is None or len(df) == 0:
             logger.warning(f"Skipping {index_name} - no data available")
             continue

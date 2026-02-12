@@ -132,6 +132,8 @@ def walk_forward_predict(
             return output.cpu().numpy(), attention.cpu().numpy()
         else:
             output = model(X_test_t)
+            if isinstance(output, tuple):
+                output = output[0]
             return output.cpu().numpy(), None
 
 

@@ -55,13 +55,13 @@ def main():
         pickle_path = results_dir / f"{index_name}_data.pkl"
         with open(pickle_path, 'wb') as f:
             pickle.dump(merged_df, f)
-        print(f"✓ Saved {index_name}: {len(merged_df)} days ({merged_df.index[0].date()} to {merged_df.index[-1].date()})")
+        print(f"Saved {index_name}: {len(merged_df)} days ({merged_df.index[0].date()} to {merged_df.index[-1].date()})")
         
         csv_path = results_dir / f"{index_name}_data.csv"
         merged_df.to_csv(csv_path)
         print(f"  CSV saved to: {csv_path}")
     except Exception as e:
-        print(f"✗ Failed to fetch {index_name}: {e}")
+        print(f"Failed to fetch {index_name}: {e}")
 
 if __name__ == "__main__":
     main()

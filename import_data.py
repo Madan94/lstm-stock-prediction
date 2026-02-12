@@ -44,43 +44,47 @@ def _merge_existing(existing: pd.DataFrame | None, new_df: pd.DataFrame) -> pd.D
 
 def main():
     """Import and save data for all indices."""
-    print(
-        f"Importing {YEARS_OF_DATA} years for all indices, "
-        f"and {SP500_YEARS} years for SP500..."
-    )
-    print(f"Indices to fetch: {list(INDICES.keys())}")
+    print("Importing data for indices...")
     
-    # Fetch data
-    data = get_all_indices_data(years=YEARS_OF_DATA)
-    # Override SP500 with 30 years
-    try:
-        sp500_symbol = INDICES["SP500"]["symbol"]
-        data["SP500"] = fetch_index_data(sp500_symbol, years=SP500_YEARS)
-    except Exception as e:
-        print(f"✗ Failed to fetch SP500 ({SP500_YEARS} years): {e}")
+    # Define durations
+    durations = {
+        "SP500": 30,
+        "NASDAQ": 23,
+        "DJI": 23
+    }
     
     # Create results directory if it doesn't exist
     results_dir = Path("backend/data/results")
     results_dir.mkdir(parents=True, exist_ok=True)
     
-    # Save data for each index
-    for index_name, df in data.items():
-        if df is not None and not df.empty:
-            existing_df = _load_existing(results_dir, index_name)
-            df = _merge_existing(existing_df, df)
-
-            # Save as pickle
-            pickle_path = results_dir / f"{index_name}_data.pkl"
-            with open(pickle_path, 'wb') as f:
-                pickle.dump(df, f)
-            print(f"✓ Saved {index_name}: {len(df)} days ({df.index[0].date()} to {df.index[-1].date()})")
+    for index_name, years in durations.items():
+        if index_name not in INDICES:
+            print(f"Skipping unknown index: {index_name}")
+            continue
             
-            # Also save as CSV for inspection
-            csv_path = results_dir / f"{index_name}_data.csv"
-            df.to_csv(csv_path)
-            print(f"  CSV saved to: {csv_path}")
-        else:
-            print(f"✗ Failed to fetch {index_name}")
+        print(f"\nFetching {years} years for {index_name}...")
+        try:
+            symbol = INDICES[index_name]["symbol"]
+            df = fetch_index_data(symbol, years=years)
+            
+            if df is not None and not df.empty:
+                existing_df = _load_existing(results_dir, index_name)
+                df = _merge_existing(existing_df, df)
+
+                # Save as pickle
+                pickle_path = results_dir / f"{index_name}_data.pkl"
+                with open(pickle_path, 'wb') as f:
+                    pickle.dump(df, f)
+                print(f"Saved {index_name}: {len(df)} days ({df.index[0].date()} to {df.index[-1].date()})")
+                
+                # Also save as CSV for inspection
+                csv_path = results_dir / f"{index_name}_data.csv"
+                df.to_csv(csv_path)
+                print(f"  CSV saved to: {csv_path}")
+            else:
+                print(f"Failed to fetch {index_name}")
+        except Exception as e:
+            print(f"Failed to fetch {index_name}: {e}")
     
     print("\nData import complete!")
 
