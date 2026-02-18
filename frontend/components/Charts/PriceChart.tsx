@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Scatter, ScatterChart } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { Prediction } from '../../types';
 
 interface PriceChartProps {
@@ -16,34 +16,42 @@ export default function PriceChart({ predictions }: PriceChartProps) {
   }));
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-      <h3 className="text-lg font-semibold mb-4 text-black">Prediction Probability Over Time</h3>
+    <div>
+      <h3 className="text-xl font-semibold mb-4 text-black">Prediction Probability Over Time</h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#000000" strokeOpacity={0.15} />
           <XAxis
             dataKey="date"
-            stroke="#6b7280"
-            tickFormatter={(value) => new Date(value).toLocaleDateString()}
+            stroke="#000000"
+            tick={{ fill: '#000000', fontSize: 12 }}
+            tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
           />
-          <YAxis stroke="#6b7280" domain={[0, 100]} />
+          <YAxis 
+            stroke="#000000" 
+            domain={[0, 100]} 
+            tick={{ fill: '#000000', fontSize: 12 }}
+            label={{ value: 'Probability (%)', angle: -90, position: 'insideLeft', fill: '#000000' }}
+          />
           <Tooltip
             contentStyle={{
               backgroundColor: '#ffffff',
-              border: '1px solid #e5e7eb',
-              borderRadius: '4px',
+              border: '2px solid #000000',
+              borderRadius: '8px',
               color: '#000000',
             }}
+            labelStyle={{ color: '#000000' }}
             labelFormatter={(value) => new Date(value).toLocaleDateString()}
           />
-          <Legend />
+          <Legend wrapperStyle={{ color: '#000000' }} />
           <Line
             type="monotone"
             dataKey="probability"
-            stroke="#22c55e"
-            strokeWidth={2}
+            stroke="#000000"
+            strokeWidth={3}
             name="Probability (%)"
             dot={false}
+            activeDot={{ r: 6, fill: '#000000' }}
           />
         </LineChart>
       </ResponsiveContainer>

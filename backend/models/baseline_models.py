@@ -153,8 +153,3 @@ class ARIMAModel:
             with open(filepath, 'rb') as f:
                 self.model = pickle.load(f)
             self.is_fitted = True
-
-
-
-
-

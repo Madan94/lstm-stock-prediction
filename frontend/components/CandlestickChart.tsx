@@ -30,7 +30,8 @@ export default function CandlestickChart() {
             y1={chartY + (i * chartHeight) / 4}
             x2="400"
             y2={chartY + (i * chartHeight) / 4}
-            stroke="#e5e7eb"
+            stroke="#000000"
+            strokeOpacity="0.12"
             strokeWidth="1"
             strokeDasharray="2,2"
           />
@@ -38,7 +39,7 @@ export default function CandlestickChart() {
 
         {/* Candlesticks */}
         {candles.map((candle, i) => {
-          const isGreen = candle.close > candle.open;
+          const isUp = candle.close > candle.open;
           const bodyTop = getY(Math.max(candle.open, candle.close));
           const bodyBottom = getY(Math.min(candle.open, candle.close));
           const bodyHeight = Math.abs(bodyTop - bodyBottom) || 2;
@@ -53,7 +54,7 @@ export default function CandlestickChart() {
                 y1={wickTop}
                 x2={candle.x}
                 y2={wickBottom}
-                stroke={isGreen ? '#22c55e' : '#ef4444'}
+                stroke="#000000"
                 strokeWidth="2"
               />
               {/* Body */}
@@ -62,8 +63,9 @@ export default function CandlestickChart() {
                 y={bodyTop}
                 width="16"
                 height={bodyHeight}
-                fill={isGreen ? '#22c55e' : '#ef4444'}
-                opacity={0.8}
+                fill={isUp ? '#000000' : '#ffffff'}
+                stroke="#000000"
+                strokeWidth="2"
               />
             </g>
           );
@@ -73,10 +75,10 @@ export default function CandlestickChart() {
         <path
           d={`M ${candles.map((c, i) => `${c.x},${getY(c.close)}`).join(' L ')}`}
           fill="none"
-          stroke="#22c55e"
+          stroke="#000000"
           strokeWidth="2"
           strokeDasharray="5,5"
-          opacity="0.5"
+          strokeOpacity="0.35"
         />
       </svg>
     </div>

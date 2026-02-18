@@ -36,8 +36,3 @@ export interface BaselineModel {
   total_return: number;
   max_drawdown: number;
 }
-
-
-
-
-

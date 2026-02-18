@@ -30,20 +30,28 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 p-4">
-      <h2 className="text-lg font-semibold mb-4 text-black">Select Index</h2>
+    <div className="w-64 border-r-2 border-black p-4 bg-white">
+      <h2 className="text-sm font-semibold mb-4 uppercase tracking-wider text-black">Markets</h2>
       <div className="space-y-2">
         {indices.map((index) => (
           <button
             key={index.name}
             onClick={() => handleIndexChange(index.name)}
-            className={`w-full text-left px-4 py-2.5 rounded transition-all font-medium ${
+            className={`w-full text-left px-4 py-3 rounded-lg transition-all border-2 ${
               selectedIndex === index.name
-                ? 'bg-black text-trading-green border border-trading-green'
-                : 'bg-gray-50 text-black/80 hover:bg-black hover:text-white hover:border hover:border-black border border-transparent'
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-black border-transparent hover:border-black hover:bg-black hover:text-white'
             }`}
           >
-            {index.display_name}
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="font-semibold">{index.display_name}</div>
+                <div className="text-xs opacity-70">{index.symbol}</div>
+              </div>
+              {selectedIndex === index.name && (
+                <div className="w-2 h-2 rounded-full bg-white"></div>
+              )}
+            </div>
           </button>
         ))}
       </div>

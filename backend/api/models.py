@@ -73,8 +73,3 @@ class BaselineComparisonResponse(BaseModel):
     """Baseline comparison response."""
     index: str
     models: List[BaselineComparison]
-
-
-
-
-

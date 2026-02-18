@@ -3,17 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
-  --trading-green: 34, 197, 94;
+  --bg-primary: #ffffff;
+  --text-primary: #000000;
+  --border-color: #000000;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Custom scrollbar */
@@ -23,16 +25,113 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: #ffffff;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #22c55e;
+  background: #000000;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #16a34a;
+  background: #000000;
+}
+
+/* Trading platform card styles */
+.trading-card {
+  background: var(--bg-primary);
+  border: 2px solid #000000;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.trading-card:hover {
+  border-color: #000000;
+  transform: translateY(-2px);
+}
+
+/* Metric card */
+.metric-card {
+  background: var(--bg-primary);
+  border: 2px solid #000000;
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #000000;
+}
+
+.metric-card.positive::before {
+  background: #000000;
+}
+
+.metric-card.negative::before {
+  background: #000000;
+}
+
+/* Button styles */
+.btn-primary {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #ffffff;
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+/* Chart container */
+.chart-container {
+  background: var(--bg-primary);
+  border: 2px solid #000000;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* Table styles */
+.trading-table {
+  background: var(--bg-primary);
+  border: 2px solid #000000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.trading-table th {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem;
+  border-bottom: 2px solid #000000;
+}
+
+.trading-table td {
+  padding: 1rem;
+  border-top: 2px solid #000000;
+  color: #000000;
+}
+
+.trading-table tr:hover {
+  background: #ffffff;
 }
 
 /* Floating animation for numbers */

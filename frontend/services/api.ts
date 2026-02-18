@@ -62,8 +62,3 @@ export const getBaselineComparison = async (index: string): Promise<BaselineMode
   }>(`/baseline-comparison/${index}`);
   return response.data.models;
 };
-
-
-
-
-

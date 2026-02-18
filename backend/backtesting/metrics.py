@@ -113,8 +113,3 @@ def calculate_all_metrics(
         'win_rate': calculate_win_rate(trades),
         'num_trades': len(trades)
     }
-
-
-
-
-

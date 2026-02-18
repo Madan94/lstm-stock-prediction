@@ -1,9 +1,9 @@
 export default function FloatingNumbers() {
   const numbers = [
-    { value: '+12.5%', color: 'text-trading-green' },
-    { value: '↑ 1,234', color: 'text-trading-green' },
-    { value: '98.7%', color: 'text-black' },
-    { value: '+5.2%', color: 'text-trading-green' },
+    { value: '+12.5%' },
+    { value: '↑ 1,234' },
+    { value: '98.7%' },
+    { value: '+5.2%' },
   ];
 
   return (
@@ -11,7 +11,7 @@ export default function FloatingNumbers() {
       {numbers.map((num, i) => (
         <div
           key={i}
-          className={`absolute ${num.color} font-bold text-lg opacity-70 animate-float`}
+          className="absolute text-black font-bold text-lg opacity-70 animate-float"
           style={{
             left: `${15 + i * 25}%`,
             top: `${20 + (i % 2) * 30}%`,

@@ -9,12 +9,12 @@ export default function AnimatedStockChart() {
         {/* Grid lines */}
         <defs>
           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#22c55e" stopOpacity="1" />
-            <stop offset="100%" stopColor="#22c55e" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="#000000" stopOpacity="1" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0.3" />
           </linearGradient>
           <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#22c55e" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#22c55e" stopOpacity="0.05" />
+            <stop offset="0%" stopColor="#000000" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0.02" />
           </linearGradient>
         </defs>
 
@@ -26,7 +26,8 @@ export default function AnimatedStockChart() {
             y1={40 + i * 40}
             x2="400"
             y2={40 + i * 40}
-            stroke="#e5e7eb"
+            stroke="#000000"
+            strokeOpacity="0.12"
             strokeWidth="1"
             strokeDasharray="2,2"
           />
@@ -77,7 +78,7 @@ export default function AnimatedStockChart() {
             cx={point.x}
             cy={point.y}
             r="4"
-            fill="#22c55e"
+            fill="#000000"
             className="animate-pulse"
             style={{ animationDelay: `${i * 0.2}s` }}
           />

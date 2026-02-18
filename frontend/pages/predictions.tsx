@@ -28,10 +28,10 @@ export default function Predictions() {
 
   if (!index) {
     return (
-      <div className="flex">
+      <div className="flex min-h-screen">
         <Sidebar />
-        <div className="flex-1 p-8">
-          <p className="text-black/60">Please select an index from the sidebar</p>
+        <div className="flex-1 p-8 flex items-center justify-center">
+          <p className="text-black">Please select an index from the sidebar</p>
         </div>
       </div>
     );
@@ -41,32 +41,55 @@ export default function Predictions() {
   const accuracy = predictions.length > 0 ? (correctCount / predictions.length) * 100 : 0;
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-black mb-8">Predictions Dashboard</h1>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-black mb-2">Predictions Dashboard</h1>
+          <p className="text-black">Real-time AI predictions for market direction</p>
+        </div>
 
         {loading ? (
-          <div className="text-black/60">Loading...</div>
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black mb-4"></div>
+              <p className="text-black">Loading predictions...</p>
+            </div>
+          </div>
         ) : (
           <>
-            <div className="mb-6">
-              <div className="bg-white border border-gray-200 rounded-lg p-4 inline-block shadow-sm">
-                <span className="text-black/70 mr-4">Recent Accuracy:</span>
-                <span className="text-2xl font-bold text-trading-green">
-                  {index === 'SP500' ? '75.46%' : `${accuracy.toFixed(2)}%`}
-                </span>
-                <span className="text-black/60 ml-2">
-                  ({correctCount} / {predictions.length})
-                </span>
+            <div className="mb-8">
+              <div className="trading-card inline-block">
+                <div className="flex items-center space-x-6">
+                  <div>
+                    <p className="text-sm text-black mb-1 uppercase tracking-wider">Recent Accuracy</p>
+                    <div className="flex items-baseline">
+                      <span className="text-4xl font-bold text-black">
+                        {accuracy.toFixed(2)}%
+                      </span>
+                      <span className="text-black ml-2 text-sm">
+                        ({correctCount} / {predictions.length})
+                      </span>
+                    </div>
+                  </div>
+                  <div className="h-12 w-px bg-black"></div>
+                  <div>
+                    <p className="text-sm text-black mb-1 uppercase tracking-wider">Total Predictions</p>
+                    <p className="text-2xl font-bold text-black">{predictions.length}</p>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className="mb-8">
-              <PriceChart predictions={predictions} />
+              <div className="chart-container">
+                <PriceChart predictions={predictions} />
+              </div>
             </div>
 
-            <PredictionsTable predictions={predictions} />
+            <div className="chart-container">
+              <PredictionsTable predictions={predictions} />
+            </div>
           </>
         )}
       </div>

@@ -33,37 +33,36 @@ export default function Home() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Hero Section with Animated Chart Background */}
-      <div className="relative mb-16 rounded-lg overflow-hidden shadow-xl">
-        {/* Background Chart */}
-        <div className="absolute inset-0 opacity-30">
+      {/* Hero Section with Animated Background */}
+      <div className="relative mb-16 rounded-lg overflow-hidden border-2 border-black bg-white">
+        <div className="absolute inset-0 opacity-20">
           <AnimatedStockChart />
           <FloatingNumbers />
         </div>
-        
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/90 to-white/95"></div>
-        
-        {/* Content Overlay */}
+
+        <div className="absolute inset-0 bg-white"></div>
+
         <div className="relative z-10 px-8 py-16 md:px-12 md:py-20">
-          {/* LIVE Badge */}
           <div className="absolute top-6 right-6 flex gap-2 z-20">
-            <span className="px-3 py-1 bg-trading-green/20 text-trading-green rounded-full text-sm font-semibold animate-pulse backdrop-blur-sm">
+            <span className="px-3 py-1 bg-white text-black border-2 border-black rounded-full text-sm font-semibold">
               LIVE
             </span>
           </div>
-          
-          {/* Hero Text Content */}
+
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-bold text-black mb-4">
-              Attention-based LSTM based Stock Prediction
+              Attention-based LSTM Stock Prediction
             </h1>
-            <p className="text-xl md:text-2xl text-black/80 mb-4 font-medium">
-              Directional Financial Forecasting with Asymmetric Loss
+            <p className="text-xl md:text-2xl text-black mb-4 font-medium">
+              Directional Financial Forecasting
             </p>
-            <p className="text-lg text-black/70 max-w-3xl mx-auto leading-relaxed">
-              To develop an enhanced financial time series forecasting model that integrates asymmetric loss functions within an attention-based LSTM framework to significantly improve directional prediction accuracy for major stock indices (S&P 500, DJI, NASDAQ Composite) over a 33-year period.
+            <p className="text-lg text-black max-w-3xl mx-auto leading-relaxed">
+              Trained on the last 1 year of market data for S&amp;P 500, Dow Jones, and NASDAQ Composite.
             </p>
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <FinancialIndicators />
           </div>
         </div>
       </div>
@@ -72,23 +71,22 @@ export default function Home() {
       <div className="mb-16">
         <h2 className="text-3xl font-bold text-black mb-8 text-center">Select Stock Index</h2>
         {loading ? (
-          <div className="text-center text-black/60">Loading indices...</div>
+          <div className="text-center text-black">Loading indices...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {indices.map((index) => (
               <button
                 key={index.name}
                 onClick={() => handleIndexSelect(index.name)}
-                className="bg-[#22c55e] border-2 border-gray-200 rounded-lg p-8 hover:border-trading-green hover:shadow-lg hover:shadow-trading-green/20 transition-all text-left relative overflow-hidden group"
+                className="trading-card text-left relative overflow-hidden group"
               >
-                {/* Animated background effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-5 transition-opacity" />
                 <div className="relative z-10">
-                  <h2 className="text-2xl font-semibold text-white mb-2">
+                  <h2 className="text-2xl font-semibold text-black mb-2">
                     {index.display_name}
                   </h2>
-                  <p className="text-white/60 text-sm mb-4">{index.symbol}</p>
-                  <p className="text-white/80">
+                  <p className="text-black text-sm mb-4 font-mono">{index.symbol}</p>
+                  <p className="text-black font-medium">
                     View predictions, attention weights, and strategy performance →
                   </p>
                 </div>
@@ -98,31 +96,38 @@ export default function Home() {
         )}
       </div>
 
-      <div className="mt-16 max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold text-black mb-6">Platform Features</h2>
+      {/* Visual (Static) Candlestick */}
+      <div className="mb-16 chart-container">
+        <h2 className="text-2xl font-semibold text-black mb-6 text-center">Sample Candlestick Pattern</h2>
+        <CandlestickChart />
+      </div>
+
+      {/* Features */}
+      <div className="mt-16 max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-black mb-8 text-center">Platform Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-black mb-2">Attention-Based LSTM</h3>
-            <p className="text-black/70">
-              Neural network with attention mechanism to identify important time periods
+          <div className="trading-card">
+            <h3 className="text-xl font-semibold text-black mb-2">Attention-Based LSTM</h3>
+            <p className="text-black">
+              Neural network with attention mechanism to highlight important time periods.
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-black mb-2">Asymmetric Loss</h3>
-            <p className="text-black/70">
-              Custom loss function that penalizes missing upward moves more heavily
+          <div className="trading-card">
+            <h3 className="text-xl font-semibold text-black mb-2">Asymmetric Loss</h3>
+            <p className="text-black">
+              Custom loss function that penalizes missed upward moves more heavily.
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-black mb-2">Walk-Forward Validation</h3>
-            <p className="text-black/70">
-              Robust training methodology using walk-forward analysis
+          <div className="trading-card">
+            <h3 className="text-xl font-semibold text-black mb-2">Walk-Forward / Simple Split</h3>
+            <p className="text-black">
+              Robust time-series evaluation designed to avoid look-ahead bias.
             </p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-black mb-2">Strategy Backtesting</h3>
-            <p className="text-black/70">
-              Long-only strategy with transaction costs and performance metrics
+          <div className="trading-card">
+            <h3 className="text-xl font-semibold text-black mb-2">Strategy Backtesting</h3>
+            <p className="text-black">
+              Backtest with equity curve and drawdown visualization.
             </p>
           </div>
         </div>

@@ -17,17 +17,11 @@ export default function Strategy() {
   useEffect(() => {
     if (!index || typeof index !== 'string') return;
 
-    Promise.all([
-      getEquityCurve(index),
-      getBaselineComparison(index),
-    ])
+    setLoading(true);
+    Promise.all([getEquityCurve(index), getBaselineComparison(index)])
       .then(([equityData, baselineData]) => {
         setEquityCurve(equityData);
-        // Filter out ARIMA
-        const filteredBaseline = baselineData.filter((model) => 
-          !model.model_name.toLowerCase().includes('arima')
-        );
-        setBaseline(filteredBaseline);
+        setBaseline(baselineData.filter((m) => !m.model_name.toLowerCase().includes('arima')));
         setLoading(false);
       })
       .catch((error) => {
@@ -38,97 +32,105 @@ export default function Strategy() {
 
   if (!index) {
     return (
-      <div className="flex">
+      <div className="flex min-h-screen">
         <Sidebar />
-        <div className="flex-1 p-8">
-          <p className="text-black/60">Please select an index from the sidebar</p>
+        <div className="flex-1 p-8 flex items-center justify-center">
+          <p className="text-black">Please select an index from the sidebar</p>
         </div>
       </div>
     );
   }
 
-  // Get Attention LSTM metrics
-  const attentionLSTM = baseline.find((m) => m.model_name === 'attention_lstm');
+  const ensembleModel = baseline.find((m) => m.model_name.toLowerCase().includes('ensemble'));
+  const attentionModel = baseline.find((m) => m.model_name.toLowerCase().includes('attention'));
+  const modelMetrics = ensembleModel || attentionModel || baseline[0];
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 p-8">
-        <h1 className="text-3xl font-bold text-black mb-8">Strategy Performance</h1>
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-black mb-2">Strategy Performance</h1>
+          <p className="text-black">Backtesting results and trading metrics</p>
+        </div>
 
         {loading ? (
-          <div className="text-black/60">Loading...</div>
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black mb-4"></div>
+              <p className="text-black">Loading strategy data...</p>
+            </div>
+          </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <MetricCard
-                title="Sharpe Ratio"
-                value={attentionLSTM?.sharpe_ratio.toFixed(2) || '0.00'}
-              />
-              <MetricCard
-                title="Total Return"
-                value={attentionLSTM?.total_return.toFixed(2) || '0.00'}
-                subtitle="%"
-              />
-              <MetricCard
-                title="Max Drawdown"
-                value={attentionLSTM?.max_drawdown.toFixed(2) || '0.00'}
-                subtitle="%"
-                trend="down"
-              />
-              <MetricCard
-                title="Accuracy"
-                value={attentionLSTM?.accuracy ? (attentionLSTM.accuracy * 100).toFixed(2) : '0.00'}
-                subtitle="%"
-              />
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-2xl font-semibold text-black mb-2">
+                    {ensembleModel ? 'Ensemble Model Performance' : 'Model Performance'}
+                  </h2>
+                  {ensembleModel && (
+                    <p className="text-sm text-black">
+                      Combined predictions from Transformer, TCN-LSTM, and Attention-LSTM models
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 px-3 py-1 rounded-full border-2 border-black bg-white">
+                  <div className="w-2 h-2 rounded-full bg-black"></div>
+                  <span className="text-black text-xs font-medium">Active</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <MetricCard
+                  title="Sharpe Ratio"
+                  value={modelMetrics?.sharpe_ratio !== undefined ? modelMetrics.sharpe_ratio.toFixed(2) : '0.00'}
+                  trend={modelMetrics?.sharpe_ratio !== undefined && modelMetrics.sharpe_ratio > 0 ? 'up' : 'neutral'}
+                />
+                <MetricCard
+                  title="Total Return"
+                  value={modelMetrics?.total_return !== undefined ? modelMetrics.total_return.toFixed(2) : '0.00'}
+                  subtitle="%"
+                  trend={modelMetrics?.total_return !== undefined && modelMetrics.total_return > 0 ? 'up' : 'down'}
+                />
+                <MetricCard
+                  title="Max Drawdown"
+                  value={modelMetrics?.max_drawdown !== undefined ? modelMetrics.max_drawdown.toFixed(2) : '0.00'}
+                  subtitle="%"
+                  trend="down"
+                />
+                <MetricCard
+                  title="Accuracy"
+                  value={modelMetrics?.accuracy ? (modelMetrics.accuracy * 100).toFixed(2) : '0.00'}
+                  subtitle="%"
+                  trend={modelMetrics?.accuracy && modelMetrics.accuracy > 0.5 ? 'up' : 'neutral'}
+                />
+              </div>
             </div>
 
-
-
-            <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8 shadow-sm">
-              <h3 className="text-lg font-semibold text-black mb-2">Market Insights</h3>
-
-              {index === 'SP500' && (
-                <p className="text-black/70">
-                  Taking the full history of the S&P 500, the overall average S&P 500 value would be <span className="font-bold">$789.83 billion</span>,
-                  with an average annual increase of (approximately) 8.52%.
-                  <span className="ml-2" role="img" aria-label="pin">📌</span>
-                </p>
-              )}
-
-              {index === 'NASDAQ' && (
-                <p className="text-black/70">
-                  Nasdaq has a market cap or net worth of <span className="font-bold">$48.25 billion</span>.
-                  The enterprise value is $57.00 billion. The last earnings date was Thursday, January 29, 2026, before market open.
-                  Nasdaq has 571.00 million shares outstanding. The number of shares has decreased by -0.10% in one year.
-                  <span className="ml-2" role="img" aria-label="pin">📌</span>
-                </p>
-              )}
-
-              {index === 'DJI' && (
-                <p className="text-black/70">
-                  The Dow Jones Industrial Average consists of 30 prominent companies listed on stock exchanges in the United States.
-                  It has historically returned approximately 5-7% annually when adjusted for inflation.
-                  <span className="ml-2" role="img" aria-label="pin">📌</span>
-                </p>
-              )}
+            <div className="trading-card mb-8">
+              <h3 className="text-lg font-semibold text-black mb-2">Notes</h3>
+              <p className="text-black">
+                Strategy metrics are produced from a simple backtest on {index}. This is for research and UI visualization only.
+              </p>
             </div>
 
             <div className="mb-8">
-              <EquityCurve data={equityCurve} />
+              <div className="chart-container">
+                <EquityCurve data={equityCurve} />
+              </div>
             </div>
 
             <div className="mb-8">
-              <DrawdownChart data={equityCurve} />
+              <div className="chart-container">
+                <DrawdownChart data={equityCurve} />
+              </div>
             </div>
           </>
         )}
       </div>
-    </div >
+    </div>
   );
 }
-
-
-
 
 

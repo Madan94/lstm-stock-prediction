@@ -53,91 +53,65 @@ export default function ModelComparisonTable({ models }: ModelComparisonTablePro
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+    <div className="bg-white border-2 border-black rounded-lg p-6">
       <h3 className="text-lg font-semibold text-black mb-4">Detailed Model Comparison</h3>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm trading-table">
           <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left p-3 text-black/60 font-semibold">Model</th>
-              <th className="text-center p-3 text-black/60 font-semibold">Accuracy (%)</th>
-              <th className="text-center p-3 text-black/60 font-semibold">Sharpe Ratio</th>
-              <th className="text-center p-3 text-black/60 font-semibold">Total Return (%)</th>
-              <th className="text-center p-3 text-black/60 font-semibold">Max Drawdown (%)</th>
+            <tr className="border-b-2 border-black">
+              <th className="text-left p-3 text-black font-semibold">Model</th>
+              <th className="text-center p-3 text-black font-semibold">Accuracy (%)</th>
+              <th className="text-center p-3 text-black font-semibold">Sharpe Ratio</th>
+              <th className="text-center p-3 text-black font-semibold">Total Return (%)</th>
+              <th className="text-center p-3 text-black font-semibold">Max Drawdown (%)</th>
             </tr>
           </thead>
           <tbody>
             {filteredModels.map((model, idx) => (
               <tr
                 key={idx}
-                className={`border-b border-gray-200 hover:bg-gray-50 ${
-                  model.model_name === 'attention_lstm' ? 'bg-trading-green/5' : ''
-                }`}
+                className={model.model_name === 'attention_lstm' ? 'border-b-2 border-black bg-black text-white' : 'border-b-2 border-black'}
               >
                 <td className="p-3">
-                  <span className="font-semibold text-black">
+                  <span className={`font-semibold ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>
                     {formatModelName(model.model_name)}
                   </span>
                   {model.model_name === 'attention_lstm' && (
-                    <span className="ml-2 px-2 py-0.5 bg-trading-green/20 text-trading-green rounded text-xs font-medium">
+                    <span className="ml-2 px-2 py-0.5 bg-white text-black border-2 border-white rounded text-xs font-medium">
                       Our Model
                     </span>
                   )}
                 </td>
                 <td className="p-3 text-center">
-                  <span
-                    className={`font-semibold ${
-                      isBest(model, 'accuracy')
-                        ? 'text-trading-green'
-                        : 'text-black'
-                    }`}
-                  >
+                  <span className={`font-semibold ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>
                     {(model.accuracy * 100).toFixed(2)}%
                   </span>
                   {isBest(model, 'accuracy') && (
-                    <span className="ml-1 text-trading-green">✓</span>
+                    <span className={`ml-1 ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>✓</span>
                   )}
                 </td>
                 <td className="p-3 text-center">
-                  <span
-                    className={`font-semibold ${
-                      isBest(model, 'sharpe_ratio')
-                        ? 'text-trading-green'
-                        : 'text-black'
-                    }`}
-                  >
+                  <span className={`font-semibold ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>
                     {model.sharpe_ratio.toFixed(2)}
                   </span>
                   {isBest(model, 'sharpe_ratio') && (
-                    <span className="ml-1 text-trading-green">✓</span>
+                    <span className={`ml-1 ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>✓</span>
                   )}
                 </td>
                 <td className="p-3 text-center">
-                  <span
-                    className={`font-semibold ${
-                      isBest(model, 'total_return')
-                        ? 'text-trading-green'
-                        : 'text-black'
-                    }`}
-                  >
+                  <span className={`font-semibold ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>
                     {model.total_return.toFixed(2)}%
                   </span>
                   {isBest(model, 'total_return') && (
-                    <span className="ml-1 text-trading-green">✓</span>
+                    <span className={`ml-1 ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>✓</span>
                   )}
                 </td>
                 <td className="p-3 text-center">
-                  <span
-                    className={`font-semibold ${
-                      isBest(model, 'max_drawdown')
-                        ? 'text-trading-green'
-                        : 'text-black'
-                    }`}
-                  >
+                  <span className={`font-semibold ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>
                     {model.max_drawdown.toFixed(2)}%
                   </span>
                   {isBest(model, 'max_drawdown') && (
-                    <span className="ml-1 text-trading-green">✓</span>
+                    <span className={`ml-1 ${model.model_name === 'attention_lstm' ? 'text-white' : 'text-black'}`}>✓</span>
                   )}
                 </td>
               </tr>
@@ -145,7 +119,7 @@ export default function ModelComparisonTable({ models }: ModelComparisonTablePro
           </tbody>
         </table>
       </div>
-      <div className="mt-4 text-xs text-black/60">
+      <div className="mt-4 text-xs text-black">
         <p>✓ indicates the best performance for each metric</p>
       </div>
     </div>
